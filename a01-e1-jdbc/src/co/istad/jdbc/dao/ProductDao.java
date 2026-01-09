@@ -8,6 +8,12 @@ import java.util.Optional;
 
 public interface ProductDao {
 
+    boolean existsByCode(String code) throws SQLException;
+
+
+    int deleteByCode(String code) throws SQLException;
+
+
     // 1. Find a product by code
     // 2. Expected return value -> Optional<Product>
     // 3. Parameters -> code

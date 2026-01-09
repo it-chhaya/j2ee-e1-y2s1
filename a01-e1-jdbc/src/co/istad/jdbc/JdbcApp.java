@@ -68,6 +68,22 @@ public class JdbcApp {
                         View.printHeader(e.getMessage());
                     }
                 }
+                case 5 -> {
+                    View.printHeader("Delete a product by code");
+                    String code = InputUtil.getText("Enter code: ");
+
+                    String confirmation = InputUtil.getText("Are you sure to delete? [y/N]");
+                    if (confirmation.equalsIgnoreCase("y"))
+                        try {
+                            productService.deleteByCode(code);
+                            View.printHeader("Product deleted successfully..!");
+                        } catch (RuntimeException e) {
+                            View.printHeader(e.getMessage());
+                        }
+                    else
+                        View.printHeader("Delete operation cancelled..!");
+
+                }
                 default -> System.out.println("Invalid menu..!");
             }
         } while(true);

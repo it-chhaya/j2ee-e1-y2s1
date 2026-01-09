@@ -17,6 +17,23 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
+    public void deleteByCode(String code) {
+        try {
+            // Validate product code
+            if (!productDao.existsByCode(code))
+                throw new RuntimeException("Product code doesn't exist..!");
+
+            int affectedRow = productDao.deleteByCode(code);
+            if (affectedRow < 1)
+                throw new RuntimeException("Delete operation failed..!");
+        } catch (SQLException e) {
+            System.out.println("SQL error: " + e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+
+    @Override
     public void updateByCode(String code, Product product) {
 
         try {

@@ -18,22 +18,49 @@ public class ProductDaoImpl implements ProductDao {
 
 
     @Override
-    public Optional<Product> findByCode(String code) throws SQLException {
+    public boolean existsByCode(String code) throws SQLException {
+        String sql = """
+                SELECT EXISTS(SELECT *
+                  FROM products
+                  WHERE code = ?);
+                """;
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, code);
 
+        ResultSet rs = pstmt.executeQuery();
+
+        if (rs.next())
+            return rs.getBoolean("exists");
+
+        return false;
+    }
+
+    @Override
+    public int deleteByCode(String code) throws SQLException {
+        String sql = """
+                DELETE
+                FROM products
+                WHERE code = ?
+                """;
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, code);
+
+        return pstmt.executeUpdate();
+    }
+
+    @Override
+    public Optional<Product> findByCode(String code) throws SQLException {
         String sql = """
                 SELECT *
                 FROM products
                 WHERE code = ?
                 """;
-
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setString(1, code);
 
         ResultSet rs = pstmt.executeQuery();
-        Product product;
-
         if(rs.next()) {
-            product = new Product();
+            Product product = new Product();
             product.setId(rs.getInt("id"));
             product.setCode(rs.getString("code"));
             product.setName(rs.getString("name"));
